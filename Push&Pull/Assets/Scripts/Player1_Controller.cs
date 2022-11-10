@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class Player1_Controller : MonoBehaviour
 {
-    // Start is called before the first frame update
+    [SerializeField] GameObject TargetObj;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetButtonDown("Push"))
+        {
+            TargetObj.transform.Translate(new Vector2(0,2f));
+        }
     }
 }
