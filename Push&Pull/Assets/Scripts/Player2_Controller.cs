@@ -73,7 +73,7 @@ public class Player2_Controller : MonoBehaviour
 
         for (int i = 0; i < hit.Length; i++)
         {
-            Debug.Log("1");
+            //Debug.Log("1");
             hit[i].transform.position = transform.position;
         }
     }

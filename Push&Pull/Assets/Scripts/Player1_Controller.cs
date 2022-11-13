@@ -8,6 +8,7 @@ public class Player1_Controller : MonoBehaviour
 
     public float speed = 3f;
     public float jumpForce = 5f;
+    public float pushFower = 3f;
     public float iDelay = 1f;
     public int maxJumpCount = 1;
     public LayerMask layerMask;
@@ -73,10 +74,12 @@ public class Player1_Controller : MonoBehaviour
 
         for (int i=0; i<hit.Length; i++)
         {
-            Rigidbody2D hitRigid = hit[i].GetComponent<Rigidbody2D>();
+            //Rigidbody2D hitRigid = hit[i].GetComponent<Rigidbody2D>();
             //hitRigid.AddForce(new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, ForceMode2D.Impulse);
-            hit[i].transform.Translate(new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized);
             //hit[].transform.position = Vector2.MoveTowards(hit[i].transform.position, new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, 3f*Time.deltaTime);
+            
+            Vector2 pushVec = new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y);
+            hit[i].transform.Translate(pushVec.normalized * pushFower);
         }
     }
 
