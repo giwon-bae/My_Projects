@@ -8,12 +8,17 @@ public class Player1_Controller : MonoBehaviour
 
     public float speed = 3f;
     public float jumpForce = 5f;
+    public float iDelay = 1f;
     public int maxJumpCount = 1;
+    public LayerMask layerMask;
 
     private float xAxis;
+    private float iCurrentTime = 0;
     private bool jDown;
+    private bool iDown;
     private int jumpCount = 0;
     private Rigidbody2D playerRigid;
+    private Collider2D[] hit;
     private Vector2 moveVec;
 
     void Start()
@@ -24,10 +29,7 @@ public class Player1_Controller : MonoBehaviour
     void Update()
     {
         GetInput();
-        //if (Input.GetButtonDown("Push"))
-        //{
-        //    TargetObj.transform.Translate(new Vector2(0,2f));
-        //}
+        Interaction();
     }
 
     private void FixedUpdate()
@@ -39,6 +41,7 @@ public class Player1_Controller : MonoBehaviour
     {
         xAxis = Input.GetAxisRaw("Horizontal");
         jDown = Input.GetButton("Jump1");
+        iDown = Input.GetButton("Interaction1");
     }
 
     void Move()
@@ -50,6 +53,30 @@ public class Player1_Controller : MonoBehaviour
         {
             playerRigid.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             jumpCount++;
+        }
+    }
+
+    void Search()
+    {
+        hit = Physics2D.OverlapCircleAll(transform.position, 3f, layerMask);
+    }
+
+    void Interaction()
+    {
+        iCurrentTime += Time.deltaTime;
+        if (!iDown || iCurrentTime < iDelay) return;
+
+        Search();
+        if (hit == null) return;
+
+        iCurrentTime = 0;
+
+        for (int i=0; i<hit.Length; i++)
+        {
+            Rigidbody2D hitRigid = hit[i].GetComponent<Rigidbody2D>();
+            //hitRigid.AddForce(new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, ForceMode2D.Impulse);
+            hit[i].transform.Translate(new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized);
+            //hit[].transform.position = Vector2.MoveTowards(hit[i].transform.position, new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, 3f*Time.deltaTime);
         }
     }
 
