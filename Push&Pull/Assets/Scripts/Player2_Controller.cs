@@ -94,6 +94,11 @@ public class Player2_Controller : MonoBehaviour
         }
     }
 
+    public void VelocityZero()
+    {
+        playerRigid.velocity = Vector2.zero;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.contacts[0].normal.y > 0.7f)
@@ -112,7 +117,7 @@ public class Player2_Controller : MonoBehaviour
         else if (collision.tag == "Key")
         {
             gameManager.hasKey = true;
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 
