@@ -9,14 +9,17 @@ public class Player2_Controller : MonoBehaviour
     public float speed = 3f;
     public float jumpForce = 5f;
     public float iDelay = 1f;
+    public bool isDead = false;
     public int maxJumpCount = 1;
     public LayerMask layerMask;
+    public GameManager gameManager;
 
     private float xAxis;
     private float iCurrentTime = 0;
     private bool jDown;
     private bool iDown;
     private int jumpCount = 0;
+    private Player1_Controller p1Ctrl;
     private Rigidbody2D playerRigid;
     private Collider2D[] hit;
     private Vector2 moveVec;
@@ -24,6 +27,7 @@ public class Player2_Controller : MonoBehaviour
     void Start()
     {
         playerRigid = GetComponent<Rigidbody2D>();
+        p1Ctrl = TargetObj.GetComponent<Player1_Controller>();
     }
 
     void Update()
@@ -78,11 +82,45 @@ public class Player2_Controller : MonoBehaviour
         }
     }
 
+    public void Die()
+    {
+        Debug.Log("Player2 is dead.");
+        Destroy(gameObject);
+        isDead = true;
+
+        if (!p1Ctrl.isDead)
+        {
+            p1Ctrl.Die();
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.contacts[0].normal.y > 0.7f)
         {
             jumpCount = 0;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            gameManager.check_p2 = true;
+            gameManager.NextStage();
+        }
+        else if (collision.tag == "Key")
+        {
+            gameManager.hasKey = true;
+            Destroy(collision.gameObject);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            gameManager.check_p2 = false;
         }
     }
 }

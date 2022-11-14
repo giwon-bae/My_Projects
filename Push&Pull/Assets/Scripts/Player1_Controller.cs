@@ -8,16 +8,19 @@ public class Player1_Controller : MonoBehaviour
 
     public float speed = 3f;
     public float jumpForce = 5f;
-    public float pushFower = 3f;
+    public float pushPower = 3f;
     public float iDelay = 1f;
+    public bool isDead = false;
     public int maxJumpCount = 1;
     public LayerMask layerMask;
+    public GameManager gameManager;
 
     private float xAxis;
     private float iCurrentTime = 0;
     private bool jDown;
     private bool iDown;
     private int jumpCount = 0;
+    private Player2_Controller p2Ctrl;
     private Rigidbody2D playerRigid;
     private Collider2D[] hit;
     private Vector2 moveVec;
@@ -25,6 +28,7 @@ public class Player1_Controller : MonoBehaviour
     void Start()
     {
         playerRigid = GetComponent<Rigidbody2D>();
+        p2Ctrl = TargetObj.GetComponent<Player2_Controller>();
     }
 
     void Update()
@@ -74,12 +78,27 @@ public class Player1_Controller : MonoBehaviour
 
         for (int i=0; i<hit.Length; i++)
         {
-            //Rigidbody2D hitRigid = hit[i].GetComponent<Rigidbody2D>();
+            Rigidbody2D hitRigid = hit[i].GetComponent<Rigidbody2D>();
             //hitRigid.AddForce(new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, ForceMode2D.Impulse);
             //hit[].transform.position = Vector2.MoveTowards(hit[i].transform.position, new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y).normalized, 3f*Time.deltaTime);
-            
+
             Vector2 pushVec = new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y);
-            hit[i].transform.Translate(pushVec.normalized * pushFower);
+            hit[i].transform.Translate(pushVec.normalized * pushPower);
+
+            //Vector2 pushVec = new Vector2(hit[i].transform.position.x - this.transform.position.x, hit[i].transform.position.y - this.transform.position.y);
+            //hitRigid.AddForce(pushVec * pushPower, ForceMode2D.Impulse);
+        }
+    }
+
+    public void Die()
+    {
+        Debug.Log("Player1 is dead.");
+        Destroy(gameObject);
+        isDead = true;
+
+        if (!p2Ctrl.isDead)
+        {
+            p2Ctrl.Die();
         }
     }
 
@@ -88,6 +107,33 @@ public class Player1_Controller : MonoBehaviour
         if (collision.contacts[0].normal.y > 0.7f)
         {
             jumpCount = 0;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            gameManager.check_p1 = true;
+            gameManager.NextStage();
+        }
+        else if (collision.tag == "Key")
+        {
+            gameManager.hasKey = true;
+            Destroy(collision.gameObject);
+        }
+        else if(collision.tag == "Dead")
+        {
+            Die();
+            
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "Finish")
+        {
+            gameManager.check_p1 = false;
         }
     }
 }
