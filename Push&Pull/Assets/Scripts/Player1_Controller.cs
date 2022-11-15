@@ -93,13 +93,17 @@ public class Player1_Controller : MonoBehaviour
     public void Die()
     {
         Debug.Log("Player1 is dead.");
-        Destroy(gameObject);
+        gameObject.SetActive(false);
         isDead = true;
+        TargetObj.SetActive(false);
+        p2Ctrl.isDead = true;
 
-        if (!p2Ctrl.isDead)
-        {
-            p2Ctrl.Die();
-        }
+        //if (!p2Ctrl.isDead)
+        //{
+        //    p2Ctrl.Die();
+        //}
+
+        gameManager.InitializingObject();
     }
 
     public void VelocityZero()
@@ -124,13 +128,12 @@ public class Player1_Controller : MonoBehaviour
         }
         else if (collision.tag == "Key")
         {
-            gameManager.hasKey = true;
+            gameManager.GetKey();
             collision.gameObject.SetActive(false);
         }
         else if(collision.tag == "Dead")
         {
             Die();
-            
         }
     }
 
