@@ -27,6 +27,11 @@ public class Player1_Controller : MonoBehaviour
 
     void Start()
     {
+        
+    }
+
+    private void OnEnable()
+    {
         playerRigid = GetComponent<Rigidbody2D>();
         p2Ctrl = TargetObj.GetComponent<Player2_Controller>();
     }

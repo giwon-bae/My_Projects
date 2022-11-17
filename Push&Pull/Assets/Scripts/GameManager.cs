@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     public bool hasKey = false;
     public GameObject p1, p2;
     public GameObject[] stages;
+    public GameObject[] Panels;
+    public GameObject startButton;
     public Image KeyImg;
 
     private Player1_Controller p1Ctrl;
@@ -19,7 +21,19 @@ public class GameManager : MonoBehaviour
     {
         p1Ctrl = p1.GetComponent<Player1_Controller>();
         p2Ctrl = p2.GetComponent<Player2_Controller>();
-        KeyImg.color = new Color(1, 1, 1, 0);
+    }
+
+    private void Start()
+    {
+        Panels[0].SetActive(true);
+    }
+
+    public void StartStage()
+    {
+        startButton.SetActive(false);
+        stages[stageIndex].SetActive(true);
+
+        InitializingObject();
     }
 
     public void NextStage()
@@ -52,11 +66,11 @@ public class GameManager : MonoBehaviour
         hasKey = false;
         KeyImg.color = new Color(1, 1, 1, 0);
 
-        PlayerReposition();
         p1.SetActive(true);
         p1Ctrl.isDead = false;
         p2.SetActive(true);
         p2Ctrl.isDead = false;
+        PlayerReposition();
     }
 
     private void PlayerReposition()
