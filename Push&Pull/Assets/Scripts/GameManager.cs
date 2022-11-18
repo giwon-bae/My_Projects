@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public int stageIndex;
+    public int curStage = 0;//->private
     public bool check_p1 = false, check_p2 = false;
     public bool hasKey = false;
     public GameObject p1, p2;
@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject startButton;
     public Image KeyImg;
 
+    public int canEnterStage = 0;//->private
     private Player1_Controller p1Ctrl;
     private Player2_Controller p2Ctrl;
 
@@ -28,30 +29,52 @@ public class GameManager : MonoBehaviour
         Panels[0].SetActive(true);
     }
 
-    public void StartStage()
+    public void GoToStageMenu()
     {
-        startButton.SetActive(false);
-        stages[stageIndex].SetActive(true);
+        Panels[0].SetActive(false);
+        Panels[1].SetActive(true);
+    }
+
+    public void StartStage(int stage)
+    {
+        if (canEnterStage < stage)
+        {
+            return;
+        }
+        curStage = stage;
+        Panels[1].SetActive(false);
+        Panels[2].SetActive(true);
+        stages[curStage].SetActive(true);
 
         InitializingObject();
     }
 
     public void NextStage()
     {
-        if (check_p1 && check_p2 && hasKey && stageIndex < stages.Length - 1)
+        if (check_p1 && check_p2 && hasKey && curStage < stages.Length - 1)
         {
-            stages[stageIndex].SetActive(false);
-            stages[++stageIndex].SetActive(true);
+            canEnterStage++;
+            stages[curStage].SetActive(false);
+            stages[++curStage].SetActive(true);
             InitializingObject();
 
             Debug.Log("Clear this stage!");
-            Debug.Log(stageIndex);
+            Debug.Log(curStage);
         }
         else
         {
             //Game Clear
             //Time.timeScale = 0;
         }
+    }
+
+    public void ReturnMenu()
+    {
+        p1.SetActive(false);
+        p2.SetActive(false);
+        stages[curStage].SetActive(false);
+        Panels[2].SetActive(false);
+        Panels[1].SetActive(true);
     }
 
     public void GetKey()
@@ -62,7 +85,7 @@ public class GameManager : MonoBehaviour
 
     public void InitializingObject()
     {
-        stages[stageIndex].transform.GetChild(2).gameObject.SetActive(true);
+        stages[curStage].transform.GetChild(2).gameObject.SetActive(true);
         hasKey = false;
         KeyImg.color = new Color(1, 1, 1, 0);
 
@@ -75,8 +98,8 @@ public class GameManager : MonoBehaviour
 
     private void PlayerReposition()
     {
-        p1.transform.position = stages[stageIndex].transform.GetChild(0).position + new Vector3(1f, 0);
-        p2.transform.position = stages[stageIndex].transform.GetChild(0).position - new Vector3(1f, 0);
+        p1.transform.position = stages[curStage].transform.GetChild(0).position + new Vector3(1f, 0);
+        p2.transform.position = stages[curStage].transform.GetChild(0).position - new Vector3(1f, 0);
         p1Ctrl.VelocityZero();
         p2Ctrl.VelocityZero();
     }
