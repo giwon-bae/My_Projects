@@ -39,6 +39,15 @@ public class Player2_Controller : MonoBehaviour
     {
         GetInput();
         Interaction();
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            //Vector2 dirVec = new Vector2(transform.position.x - TargetObj.transform.position.x, transform.position.y - TargetObj.transform.position.y);
+            Vector2 dirVec = (transform.position - TargetObj.transform.position).normalized;
+            Debug.Log(dirVec);
+            //playerRigid.AddForce(dirVec * 50f);
+            playerRigid.velocity = dirVec * 10f;
+        }
     }
 
     private void FixedUpdate()
